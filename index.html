@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Graduation Countdown</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg-start: #0f172a;
+        --bg-end: #1d4ed8;
+        --panel: rgba(15, 23, 42, 0.78);
+        --text: #e2e8f0;
+        --muted: #94a3b8;
+        --accent: #fbbf24;
+        --shadow: 0 20px 45px rgba(15, 23, 42, 0.4);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: radial-gradient(circle at top, rgba(251, 191, 36, 0.22), transparent 32%),
+          linear-gradient(135deg, var(--bg-start), var(--bg-end));
+        color: var(--text);
+      }
+
+      .card {
+        width: min(760px, 100%);
+        padding: 40px;
+        border-radius: 28px;
+        background: var(--panel);
+        backdrop-filter: blur(16px);
+        box-shadow: var(--shadow);
+        border: 1px solid rgba(226, 232, 240, 0.12);
+      }
+
+      .eyebrow {
+        margin: 0 0 12px;
+        color: var(--accent);
+        font-size: 0.95rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(2.4rem, 5vw, 4.4rem);
+        line-height: 1.05;
+      }
+
+      .subtitle {
+        margin: 18px 0 0;
+        max-width: 40ch;
+        color: var(--muted);
+        font-size: 1.05rem;
+        line-height: 1.6;
+      }
+
+      .countdown {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+        margin: 34px 0 24px;
+      }
+
+      .time-box {
+        padding: 24px 20px;
+        border-radius: 22px;
+        background: rgba(30, 41, 59, 0.72);
+        border: 1px solid rgba(148, 163, 184, 0.18);
+        text-align: center;
+      }
+
+      .value {
+        display: block;
+        font-size: clamp(2.2rem, 7vw, 4rem);
+        font-weight: 800;
+        line-height: 1;
+      }
+
+      .label {
+        display: block;
+        margin-top: 10px;
+        color: var(--muted);
+        font-size: 0.95rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .footer {
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      .done {
+        margin-top: 24px;
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--accent);
+      }
+
+      @media (max-width: 640px) {
+        .card {
+          padding: 28px;
+        }
+
+        .countdown {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="card">
+      <p class="eyebrow">Graduation Countdown</p>
+      <h1>May 9, 2026</h1>
+      <p class="subtitle">
+        A simple browser-based countdown that updates live and shows exactly how many days, hours,
+        and minutes are left until graduation day.
+      </p>
+
+      <section class="countdown" aria-label="Countdown to graduation">
+        <article class="time-box">
+          <span class="value" id="days">0</span>
+          <span class="label">Days</span>
+        </article>
+        <article class="time-box">
+          <span class="value" id="hours">0</span>
+          <span class="label">Hours</span>
+        </article>
+        <article class="time-box">
+          <span class="value" id="minutes">0</span>
+          <span class="label">Minutes</span>
+        </article>
+      </section>
+
+      <p class="footer" id="last-updated">Counting down to 12:00 AM on graduation day in your local time.</p>
+      <p class="done" id="done-message" hidden>🎓 Congratulations — it's graduation day!</p>
+    </main>
+
+    <script>
+      const targetDate = new Date(2026, 4, 9, 0, 0, 0, 0);
+      const dayEl = document.getElementById('days');
+      const hourEl = document.getElementById('hours');
+      const minuteEl = document.getElementById('minutes');
+      const footerEl = document.getElementById('last-updated');
+      const doneEl = document.getElementById('done-message');
+
+      function updateCountdown() {
+        const now = new Date();
+        const totalMs = targetDate - now;
+
+        if (totalMs <= 0) {
+          dayEl.textContent = '0';
+          hourEl.textContent = '0';
+          minuteEl.textContent = '0';
+          doneEl.hidden = false;
+          footerEl.textContent = 'Graduation day has arrived.';
+          return;
+        }
+
+        const totalMinutes = Math.floor(totalMs / (1000 * 60));
+        const days = Math.floor(totalMinutes / (60 * 24));
+        const hours = Math.floor((totalMinutes % (60 * 24)) / 60);
+        const minutes = totalMinutes % 60;
+
+        dayEl.textContent = String(days);
+        hourEl.textContent = String(hours).padStart(2, '0');
+        minuteEl.textContent = String(minutes).padStart(2, '0');
+        footerEl.textContent = `Last updated: ${now.toLocaleString()}`;
+      }
+
+      updateCountdown();
+      setInterval(updateCountdown, 1000 * 30);
+    </script>
+  </body>
+</html>
